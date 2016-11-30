@@ -6,11 +6,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<c:import url="head-meta.jsp"></c:import>
-<title>Queens</title>
+<c:import url="/head-meta"/>
+<title>QueenS</title>
 </head>
 <body style="background-color:pink;">
-<c:import url="head.jsp"></c:import>
+<c:import url="/head"/>
 <div class="container">
 
 
@@ -34,7 +34,27 @@
 				</tr>
                <tr>
 					<td>Category :</td>
-					<td><form:input path="ProductCategory" type="text" /></td>
+					<td>
+					<form:select path="ProductCategory">
+					
+						<c:choose>
+						
+							<c:when test="${not empty AllCategories}">
+							
+								<c:forEach var="cat" items="${AllCategories}">
+									<form:option value="${cat}"/>
+								</c:forEach>
+							
+							</c:when>
+						
+							<c:otherwise>
+								<form:option value="None"/>
+							</c:otherwise>
+						
+						</c:choose>
+					
+					</form:select>
+					</td>
 				</tr>
 				<tr>
 					<td>Price :</td>
@@ -44,7 +64,7 @@
 					<td><form:label path="ProductImage" for="ProductImage">Image:</form:label></td>
 					<td><label class="form-control"><span
 							id="file_display1">Choose Image</span><span
-							style="position: relative;"><form:input path="ProductFile"
+							style="position: relative;"><form:input path="productFile"
 									onchange="changeFileDisplay1();" type="file" style="opacity:0;"
 									class="form-control" id="imageFile1" /></span></label> <script
 							type="text/javascript">

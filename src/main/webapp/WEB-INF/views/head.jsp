@@ -7,24 +7,27 @@
 .glyphicon.glyphicon-fire{  font-size: 100px;}
 .glyphicon.glyphicon-ok{font-size: 100px;}
 
-html{
- position: relative;
- min-height: 100%;
- 
- }
 
-.footer
-{
- position:absolute;
- bottom: 0;
- width:100%;
- text-align:centre;
- color:#dddddd;
- height:50px;
- background-color:#000000;
-
-
+body {
+/* Margin bottom by footer height */
+margin-bottom: 600px;
 }
+html {
+position: relative;
+min-height: 100%;
+}
+.footer {
+position: absolute;
+bottom: 0;
+width: 100%;
+text-align: center;
+color: #dddddd;
+/* Set the fixed height of the footer here */
+height: 50px;
+background-color: #000000;
+}
+
+</style>
 </style>
 
 <myhead style="position:absolute;left:0;top:0;width: 100%;text-align: center;font-size: 50px;font-style:bold;font-family:forte;">Q U E E N S<com style="top:1650px;
@@ -39,13 +42,38 @@ html{
       <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/index.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/index">Home</a></li>
       <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/contact.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/contact">Contact </a><li>
        <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/product.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/product">Product </a><li>
-        <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/category.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/category">Category </a><li>
+       
+       <%
+       	if( request.isUserInRole("ADMIN") )
+       	{
+		%>
+       
+       <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/category.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/category">Category </a><li>
+       
+       <%
+       	}
+		%>
        
       <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/AboutUs.jsp'}">class="active"</c:if>> <a href="AboutUs">About Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/SignUp.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/SignUp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/Login.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/Login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    
+    	<c:choose>
+    	
+    		<c:when test="${ not empty pageContext.request.userPrincipal.name}">
+    			<li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/SignUp.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/index">${pageContext.request.userPrincipal.name}</a></li>
+    			<li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/SignUp.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/logout">Log Out</a></li>
+    		</c:when>
+    		
+    		<c:otherwise>
+    		
+    			<li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/SignUp.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/SignUp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+			    <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/Login.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/loginpage"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    		
+    		</c:otherwise>
+    	
+    	</c:choose>
+      
    </ul>
   </div>
 </nav>

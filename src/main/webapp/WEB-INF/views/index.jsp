@@ -20,9 +20,6 @@
 
 </style>
 <body style="background-color:pink"; >
-<div id="bg">
-<img src="resources/images/.jpg" alt="">
-</div>
 
 
 

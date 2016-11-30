@@ -21,11 +21,6 @@ public class Product {
 	private String ProductQty;
 	private String ProductImage;
 	
-
-	
-	
-	
-	
 	public int getId() {
 		return Id;
 	}

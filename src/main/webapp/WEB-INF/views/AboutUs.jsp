@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<c:import url="head-meta.jsp"></c:import>
+<c:import url="/head-meta"/>
 
 
 
@@ -13,14 +13,14 @@
 <title>QueenS</title>
 </head>
 <body style="background-color:pink;">
-<c:import url="head.jsp"></c:import>
+<c:import url="/head"/>
 <div class="container-fluid">
 <div class="col-md-6">
 <img src="resources/images/333.png" class="img-responsive"
 alt="queens ">
 </div>
 <div class="col-md-6">
-<h1>About Us</h1>
+<h1 style="text-decoration: underline";>About Us</h1>
 <p> QueenS.com is the premiere destination for afforable contemporary women's fashion. Shop cute dresses, tops, shoes & accessories for every occasion.</p>
 <br>
 

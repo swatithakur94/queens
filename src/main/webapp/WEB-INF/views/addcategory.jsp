@@ -6,25 +6,39 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<c:import url="head-meta.jsp"></c:import>
-<title>Queens</title>
+<c:import url="/head-meta"/>
+<title>QueenS</title>
 </head>
 <body style="background-color:pink;">
-<c:import url="head.jsp"></c:import>
-
-<h3  position="left:300px";> ADD CATEGORY</h3>
+<c:import url="/head"/>
 
 <div class="container">
 
-	<form:form method="post" action="AddCategoryToDB" modelAttribute="Category">
+	<form:form method="post" action="AddCategoryToDB" modelAttribute="Category" enctype="multipart/form-data">
 	
-		<div class="col-xs-2">
-			<form:input path="CategoryName" type="text" placeholder="Enter Category Name"/>
-	    </div>
+		
+<div class="col-md-4 col-md-offset-4">
+<h3 style="text-decoration: underline";><b>ADD CATEGORY</b></h3>
+</div>
+</div>
+<br>
 
-		<div class="col-xs-2">    
-	     	<input type="submit" class="btn btn-primary" value="ADD"/>
-	  	</div>
+<div class="col-md-4 col-md-offset-4">
+<form id="loginform" class="form-horizontal" role="form">
+<div style="margin-bottom: 25px" class="input-group">
+ <form:input path="id" type="hidden"/>
+<form:input type="text" path="CategoryName" class="form-control"/>
+                    
+</div>
+
+<div style="margin-top: 10px" class="form-group">
+<!-- Button -->
+<div class="col-sm-12 controls">
+<button id="btn-login" href="#" class="btn btn-primary ">ADD</button>
+
+</div>
+</form>
+</div>
   </form:form>
   </div>
 </body>

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>QueenS</title>
 <c:import url="/head-meta"/>
 </head>
 <script type="text/javascript">
@@ -22,45 +22,67 @@
 	<c:import url="/head"/>
 
 	<div class="container-fluid">
+	<div class="col-md-4 col-md-offset-4">
+	
+	</div>
+		
+	</div>
 
-		<div class="col-md-12">
-			<a type="button"
-				href="${pageContext.request.contextPath}/addproduct"
-				class="btn btn-primary">Add Product</a>
+	<%
+       	if( request.isUserInRole("ADMIN") )
+       	{
+		%>
+
+	<div class="container-fluid">
+		<div class="col-md-4 col-md-offset-4">
+			<a href="addproduct" class="btn btn-primary btn-block">Add Product</a>
 		</div>
 	</div>
-	<br>
-	<div class="container fluid">
-		<table class="table">
-
-			<tbody>
-				<tr ng-repeat="x in data">
-					<td><label>Product Name:&nbsp;{{ x.ProductName }}</label>
-					    <label>Product Description:&nbsp;{{ x.ProductDescription }}</label>
-					    <label>Product Category:&nbsp;{{ x.ProductCategory }}</label>
-					    <label>Product Price:&nbsp;{{ x.ProductPrice }}</label>
-					    <label>Product Qty:&nbsp;{{ x.ProductQty }}</label>
-					    <label>Product Image:&nbsp;{{ x.ProductImage }}</label>
-					<div class="btn1">
-								<a
-									href="updateproduct/{{x.ProductId}}"
-									class="button3">UPDATE</a>
-							</div>
 	
-							<div class="btn1">
-								<a
-									href="deleteproduct/{{x.ProductId}}"
-									class="button3">DELETE</a>
-							</div>
-					
-					
-					
+	<%
+	}
+	%>
+	
+	<br><br>
+	
+	<div class="container-fluid">
+	<div class="col-md-12">
+	
+	<table class="table table-hover">
+			<tbody>
+			<tr>			
+				<th>Product Name</th>
+				<th>Product Category</th>
+				<th>Product Description</th>
+				<th>Product Qty</th>
+				<th>Product Price</th>
+				<th>Product Image</th>
+			</tr>
+				<tr ng-repeat="x in data ">
+					<td>
+				
+					{{x.ProductName}}
 					</td>
-				</tr>
+					<td>{{x.ProductCategory}}</td>
+					<td>{{x.ProductDescription}}</td>
+					<td>{{x.ProductQty}}</td>
+					<td>{{x.ProductPrice}}</td>
+					<td><img
+						ng-src="${pageContext.request.contextPath}/{{ x.flag }}" height=" 50px" width="100px"></td>
+
+					<%
+			       	if( request.isUserInRole("ADMIN") )
+			       	{
+					%>
+					<td><a href="updateproduct/{{x.ProductId}}" class="btn btn-warning btn-xs">UPDATE</a></td>
+					<td><a href="deleteproduct/{{x.ProductId}}" class="btn btn-danger btn-xs">DELETE</a></td>						
+					<%
+			       	}
+					%>
+					</tr>
 			</tbody>
-
 		</table>
-
+		</div>
 	</div>
 </body>
 </html>

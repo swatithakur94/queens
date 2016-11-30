@@ -5,8 +5,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-<c:import url="head-meta.jsp"></c:import>
+<title>QueenS</title>
+<c:import url="/head-meta"/>
 </head>
 <script type="text/javascript">
 	var myApp = angular.module('xyz', []);
@@ -19,44 +19,43 @@
 
 
 <body ng-app="xyz" ng-controller="abc" style="background-color: pink;">
-	<c:import url="head.jsp"></c:import>
+	<c:import url="/head"/>
+	<div class="container-fluid">
+	<div class="col-md-4 col-md-offset-4">
+	
+	</div>
+		
+	</div>
+
 
 	<div class="container-fluid">
-
-		<div class="col-md-12">
-			<a type="button"
-				href="${pageContext.request.contextPath}/addcategory"
-				class="btn btn-primary">Add Category</a>
+		<div class="col-md-4 col-md-offset-4">
+			<a href="${pageContext.request.contextPath}/addcategory" class="btn btn-primary btn-block">Add Category</a>
 		</div>
 	</div>
-	<br>
-	<div class="container fluid">
-		<table class="table">
-
-			<tbody>
-				<tr ng-repeat="x in data">
-					<td><label>Category Name:&nbsp;{{ x.CategoryName }}</label>
-					
-					<div class="btn1">
-								<a
-									href="updatecategory/{{x.CategoryId}}"
-									class="button3">UPDATE</a>
-							</div>
 	
-							<div class="btn1">
-								<a
-									href="deletecategory/{{x.CategoryId}}"
-									class="button3">DELETE</a>
-							</div>
-					
-					
-					
+	<br><br>
+	
+	<div class="container-fluid">
+	<div class="col-md-12">
+	
+	<table class="table table-hover">
+			<tbody>
+			<tr>			
+				<th>Category Name</th>
+				
+			</tr>
+				<tr ng-repeat="x in data ">
+					<td>
+				
+					{{x.CategoryName}}
 					</td>
-				</tr>
+					<td><a href="updatecategory/{{x.CategoryId}}" class="btn btn-warning btn-xs">UPDATE</a></td>
+					<td><a href="deletecategory/{{x.CategoryId}}" class="btn btn-danger btn-xs">DELETE</a></td>		
+					</tr>
 			</tbody>
-
 		</table>
-
+		</div>
 	</div>
 </body>
 </html>

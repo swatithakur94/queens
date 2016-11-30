@@ -5,18 +5,28 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-
+import queens.UserModel.User;
+import queens.UserModel.UserDAO;
+import queens.UserRoleModel.UserRoleDAO;
 import queens.category.Category;
 import queens.category.CategoryDAO;
 import queens.product.Product;
@@ -32,6 +42,11 @@ public class HelloController
 	@Autowired
 	ProductDAO ps;
 	
+	@Autowired
+	UserDAO udao; 
+	
+	@Autowired
+	UserRoleDAO urdao; 
 	
     @Autowired
 	CategoryDAO cdao;
@@ -43,7 +58,7 @@ public class HelloController
 	@RequestMapping("/")
 	public String home()
 	{
-		
+		urdao.generateUserRoles();
 		return "index";
 	}
 	
@@ -78,15 +93,17 @@ public class HelloController
 	{
 		return "head";
 	}
-	@RequestMapping(value ="/Login")
+	/*@RequestMapping(value ="/Login")
 	public String Login()
 	{
 		return "Login";
-	}
+	}*/
 	@RequestMapping(value ="/SignUp")
-	public String SignUp()
+	public ModelAndView SignUp()
 	{
-		return "SignUp";
+		ModelAndView  mav= new ModelAndView ("SignUp");
+		mav.addObject("User", new User());
+		return mav;
 	}
 	
 	
@@ -104,6 +121,9 @@ public class HelloController
 		ModelAndView mav = new ModelAndView("addproduct");
 		mav.addObject("Product", new Product());
 		
+		List<Category> list = cdao.getAllCategories();
+		
+		mav.addObject("AllCategories", list );
 
 		return mav;
 	}
@@ -115,6 +135,13 @@ public class HelloController
 		return "redirect:/category";
 	
 	}
+ /*	@RequestMapping(value = "/insertuser", method=RequestMethod.POST)
+	public String insertuser ( @ModelAttribute("User")User p) {
+		
+		udao.insertUser(p);
+		
+		return "redirect:/SignUp";
+	*/
 	
 	@RequestMapping(value = "/AddProductToDB", method=RequestMethod.POST)
 	public String AddProductToDB ( @ModelAttribute("Product")Product p) {
@@ -211,6 +238,7 @@ public class HelloController
 			jobj.put("ProductDescription", p.getProductDescription());
 			jobj.put("ProductQty", p.getProductQty());
 			jobj.put("ProductPrice", p.getProductPrice());
+			jobj.put("flag", p.getProductImage());
 			jarr.add(jobj);
 		}
 		
@@ -233,7 +261,7 @@ public class HelloController
 		
 		return mav;
 	}
-		@RequestMapping("/updateproduct/{pid}")
+	/*	@RequestMapping("/updateproduct/{pid}")
 		public ModelAndView updateproduct( @PathVariable("pid") int pid ) {
 			
 			ModelAndView mav = new ModelAndView("updateproduct");
@@ -245,13 +273,41 @@ public class HelloController
 			mav.addObject("Product", p);
 			
 			return mav;
+	}*/
+	@RequestMapping(value = "/updateproduct/{pid}")
+	public ModelAndView updateproduct(@PathVariable("pid")int pid) {
+		ModelAndView mav = new ModelAndView("updateproduct");
+		
+		Product p = ps.getProduct(pid);
+		
+		mav.addObject("Product", p);
+		
+		List<Category> list = cdao.getAllCategories();
+		
+		mav.addObject("AllCategories", list );
+
+		return mav;
 	}
 	@RequestMapping(value = "/deletecategory/{cid}")
 	public String deleteCategory(@PathVariable("cid") int cid) {
 
 		System.out.println(cid);
-
+		
+		Category c = cdao.getCategory(cid);
+		
 		cdao.delete(cid);
+		
+		List<Product> list = ps.getAllProducts();
+		
+		for( Product p:list )
+		{
+			if( p.getProductCategory().equals( c.getCategoryName() ) )
+			{
+				p.setProductCategory("-");
+				ps.update(p);
+			}
+		}
+		
 		return "redirect:/category";
 	}
 	@RequestMapping(value = "/deleteproduct/{pid}")
@@ -265,19 +321,140 @@ public class HelloController
 	@RequestMapping(value = "/UpdateCategoryToDB", method=RequestMethod.POST)
 	public String UpdateCategoryToDB ( @ModelAttribute("Category") Category c) {
 		ModelAndView mav = new ModelAndView("Category");
+		
+		Category c_Old = cdao.getCategory(c.getId());
+		
 		cdao.update(c);
-		mav.addObject("Category", new Category());
+		
+		List<Product> list = ps.getAllProducts();
+		
+		for( Product p : list )
+		{
+			if( p.getProductCategory().equals(c_Old.getCategoryName()) )
+			{
+				p.setProductCategory(c.getCategoryName());
+				ps.update(p);
+			}
+		}
+		
+		//mav.addObject("Category", new Category());
 		
 		return "redirect:/category";
 	
 	}
 	@RequestMapping(value = "/UpdateProductToDB", method=RequestMethod.POST)
 	public String UpdateProductToDB ( @ModelAttribute("Product") Product p) {
-		ModelAndView mav = new ModelAndView("Product");
+
+		try {
+			String path = context.getRealPath("/");
+
+			System.out.println(path);
+
+			File directory = null;
+
+			// System.out.println(ps.getProductWithMaxId());
+
+			if (p.getProductFile().getContentType().contains("image")) {
+				directory = new File(path + "\\resources\\images");
+
+				System.out.println(directory);
+
+				byte[] bytes = null;
+				File file = null;
+				bytes = p.getProductFile().getBytes();
+
+				if (!directory.exists())
+					directory.mkdirs();
+
+				file = new File(directory.getAbsolutePath() + System.getProperty("file.separator") + "image_"
+						+ p.getId() + ".jpg");
+
+				System.out.println(file.getAbsolutePath());
+
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+				stream.write(bytes);
+				stream.close();
+
+			}
+
+			p.setProductImage("resources/images/image_" + p.getId() + ".jpg");
 		ps.update(p);
-		mav.addObject("Product", new Product());
-		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+
 		return "redirect:/product";
 	
 	}
+	
+	@RequestMapping(value = "/insertuser", method = RequestMethod.POST)
+	public ModelAndView insertUser(@Valid @ModelAttribute("User") User p, BindingResult bind) {
+
+		ModelAndView mav = new ModelAndView("SignUp");
+
+		System.out.println("In User Insert");
+
+		if (bind.hasErrors()) {
+			
+			System.out.println(p);
+			
+			mav.addObject("User", p);
+		} else {
+			if (p.getPassword().equals(p.getCPassword())) {
+				List<User> list = udao.getAllUsers();
+
+				System.out.println(list);
+
+				boolean usermatch = false;
+
+				for (User u : list) {
+					if (u.getUsername().equals(p.getUsername())) {
+						usermatch = true;
+						break;
+					}
+				}
+
+				if (usermatch == false) {
+					udao.insertUser(p);
+
+					mav.addObject("newuser", new User());
+
+					mav.addObject("success", "success");
+				} else {
+					mav.addObject("newuser", p);
+
+					mav.addObject("useralreadyexists", "useralreadyexists");
+				}
+			} else {
+				mav.addObject("newuser", p);
+
+				mav.addObject("passwordmismatch", "passwordmismatch");
+			}
+
+		}
+
+		return mav;
+	}
+	@RequestMapping(value = "/loginpage", method = RequestMethod.GET)
+	public ModelAndView login() {
+
+		ModelAndView mav = new ModelAndView("loginpage");
+
+		return mav;
+
+	}
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) 
+		{
+
+			System.out.println("In LogOut");
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+
+		}
+
+		return "index";
+	}
+	
 }

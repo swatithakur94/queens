@@ -19,9 +19,9 @@
                     
                     <form:form method="POST" action="${pageContext.request.contextPath}/UpdateCategoryToDB" modelAttribute="Category">
                     
-                    	<form:label path="categoryName">Enter Category Name:</form:label>
+                    	<form:label path="CategoryName">Enter Category Name:</form:label>
                     	
-                    	<form:input type="text" path="categoryName" class="form-control"/>
+                    	<form:input type="text" path="CategoryName" class="form-control"/>
                     
                     	<form:input path="id" type="hidden"/>
                     

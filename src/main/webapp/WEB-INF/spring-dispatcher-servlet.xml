@@ -49,6 +49,8 @@
 		<list>
 		<value>queens.category</value>
 		<value>queens.product</value>
+		<value>queens.UserModel</value>
+		<value>queens.UserRoleModel</value>
 		</list>
 		</property>
 		
