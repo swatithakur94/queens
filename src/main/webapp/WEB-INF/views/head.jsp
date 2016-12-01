@@ -47,14 +47,23 @@ background-color: #000000;
        	if( request.isUserInRole("ADMIN") )
        	{
 		%>
+		
        
        <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/category.jsp'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/category">Category </a><li>
        
        <%
        	}
 		%>
-       
+      
       <li <c:if test="${pageContext.request.requestURI eq '/queens/WEB-INF/views/AboutUs.jsp'}">class="active"</c:if>> <a href="AboutUs">About Us</a></li>
+     <%
+						if (request.isUserInRole("USER"))
+						{
+							%>
+	<li><a href="${pageContext.request.contextPath}/initiateFlow" >View Cart</a></li>
+							<%							
+						}
+						%>
     </ul>
     <ul class="nav navbar-nav navbar-right">
     
