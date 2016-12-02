@@ -68,8 +68,11 @@
 					<td>{{x.ProductQty}}</td>
 					<td>{{x.ProductPrice}}</td>
 					<td><img
-						ng-src="${pageContext.request.contextPath}/{{ x.flag }}" height=" 50px" width="100px"></td>
-
+					
+					ng-src="${pageContext.request.contextPath}/{{ x.flag }}" height=" 50px" width="100px"></td>
+                    
+                    
+						<td><a href="${pageContext.request.contextPath}/view/{{x.ProductId}}" class="btn btn-warning btn-xs">VIEW</a></td>
 					<%
 			       	if( request.isUserInRole("ADMIN") )
 			       	{
