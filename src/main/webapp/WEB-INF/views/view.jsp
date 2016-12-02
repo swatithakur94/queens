@@ -57,7 +57,7 @@
 				<tr>
 					<td></td>
 					<td><input type="submit" value="Add To Cart"
-						class="btn btn-success" /></td>
+						class="btn btn-danger" /></td>
 				</tr>
 			</form>
 <%

@@ -13,8 +13,41 @@
 <title>QueenS</title>
 </head>
 
-
-<body style="background-color:pink;">
+<script type="text/javascript">
+'use strict';
+		var myApp = angular.module('myApp',[]);
+	
+		myApp.factory('UserService', ['$http', '$q', function($http, $q)
+		{
+	 
+    	return {
+         
+    		deleteAllFromCart: function(item){
+                    return $http.post('http://localhost:9080/queens/flows/deleteAllFromCart/', item)
+                            .then(
+                                    function(response){
+                                        return response.data;
+                                    }, 
+                                    function(errResponse){
+                                        console.error('Error while sending data');
+                                        return $q.reject(errResponse);
+                                    }
+                            );
+            }
+    };
+ 
+}]);
+	
+	///////////////
+	
+	
+	myApp.controller("abc",['$scope', 'UserService' ,function($scope , $UserService)
+	{
+		$UserService.deleteAllFromCart();
+	}]); 
+	
+</script>
+<body ng-app="myApp" ng-controller="abc" style="background-color:pink;">
 <c:import url="/head"/>
 
  

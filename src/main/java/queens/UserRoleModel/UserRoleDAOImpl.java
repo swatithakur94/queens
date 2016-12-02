@@ -80,7 +80,7 @@ public class UserRoleDAOImpl implements UserRoleDAO
 		//
 		
 			}
-
+	@Transactional
 	public UserRole getUserRole(int p) {
 		@SuppressWarnings("unchecked")
 		List<UserRole> l = sessionFactory.getCurrentSession().createQuery("from UserRole as p where p.Role = :id").setInteger("id", p).list();

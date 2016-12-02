@@ -71,8 +71,14 @@
 					
 					ng-src="${pageContext.request.contextPath}/{{ x.flag }}" height=" 50px" width="100px"></td>
                     
-                    
+                    <%
+       	if( request.isUserInRole("USER") )
+       	{
+		%>
 						<td><a href="${pageContext.request.contextPath}/view/{{x.ProductId}}" class="btn btn-warning btn-xs">VIEW</a></td>
+					<%
+			       	}
+					%>
 					<%
 			       	if( request.isUserInRole("ADMIN") )
 			       	{
